@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Next Pizza — вкусней уже некуда</title>
+  <meta name="description" content="Next Pizza — доставка вкуснейшей пиццы. Собери свою пиццу, добавь ингредиенты и оформи заказ за пару кликов.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="icon" href="images/logo.webp">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="app">
+    <div class="white-card">
+
+      <!-- Header -->
+      <header class="header">
+        <div class="logo" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+          <img src="images/logo.webp" alt="Next Pizza">
+          <div>
+            <div class="logo-title">Next Pizza</div>
+            <div class="logo-sub">вкусней уже некуда</div>
+          </div>
+        </div>
+        <div class="header-right">
+          <button class="btn-outline" id="loginBtn">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M8 8a3 3 0 100-6 3 3 0 000 6zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="currentColor"/>
+            </svg>
+            <span id="loginLabel">Войти</span>
+          </button>
+          <button class="btn-cart" id="cartBtn">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M1 1h2l2.4 9.6a1 1 0 001 .8h6.3a1 1 0 00.96-.73L15 4H4" stroke="#fff" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="6.5" cy="14" r="1" fill="#fff"/>
+              <circle cx="11.5" cy="14" r="1" fill="#fff"/>
+            </svg>
+            <span id="cartTotal">0 ₽</span>
+            <span class="divider"></span>
+            <span class="cart-count" id="cartCount">0</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Main -->
+      <main class="content">
+
+        <!-- Filters -->
+        <aside class="filters">
+          <h3>Фильтрация</h3>
+
+          <div class="filter-group">
+            <div class="toggle-row">
+              <span>Можно собирать</span>
+              <label class="switch">
+                <input type="checkbox" id="filterCustom">
+                <span class="slider"></span>
+              </label>
+            </div>
+            <div class="toggle-row">
+              <span>Новинки</span>
+              <label class="switch">
+                <input type="checkbox" id="filterNew">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="filter-group">
+            <h4>Цена от и до:</h4>
+            <div class="price-inputs">
+              <input type="number" id="priceMin" placeholder="0">
+              <input type="number" id="priceMax" placeholder="1950">
+            </div>
+            <button class="btn-apply" id="applyFilters">Применить</button>
+          </div>
+
+          <div class="filter-group">
+            <h4>Ингредиенты</h4>
+            <div id="ingredientFilters"></div>
+            <span class="show-all" id="showAllIngredients">+ Показать всё</span>
+          </div>
+        </aside>
+
+        <!-- Catalog -->
+        <section class="catalog">
+          <h1 class="page-title" id="catalogTitle">Все пиццы</h1>
+
+          <div class="search-sort-row">
+            <div class="search-box">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <circle cx="7" cy="7" r="5" stroke="#adadad" stroke-width="1.5"/>
+                <path d="M11 11l3.5 3.5" stroke="#adadad" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+              <input type="text" id="searchInput" placeholder="Поиск пиццы...">
+            </div>
+            <div class="sort-select">
+              <span>Сортировка:</span>
+              <select id="sortSelect">
+                <option value="popular">рейтингу</option>
+                <option value="price-asc">по цене (возр.)</option>
+                <option value="price-desc">по цене (убыв.)</option>
+                <option value="name">по алфавиту</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="categories" id="categories"></div>
+
+          <div class="pizza-grid" id="pizzaGrid"></div>
+
+          <div class="pagination" id="pagination"></div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- Pizza modal -->
+  <div class="modal-overlay" id="pizzaModal">
+    <div class="modal">
+      <button class="modal-close" style="position:absolute;top:20px;right:20px;background:#fff;border:none;width:40px;height:40px;border-radius:50%;font-size:20px;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.15);z-index:5" onclick="closePizzaModal()">✕</button>
+      <div class="modal-left">
+        <img id="modalImg" src="" alt="">
+      </div>
+      <div class="modal-right">
+        <h2 class="modal-title" id="modalTitle"></h2>
+        <div class="modal-sub" id="modalSub"></div>
+
+        <div class="option-label">Тип теста</div>
+        <div class="segmented" id="modalSizeType"></div>
+
+        <div class="option-label" id="modalSizeLabel">Размер</div>
+        <div class="segmented" id="modalSize"></div>
+
+        <div class="option-label">Добавить по вкусу</div>
+        <div class="ingredients-grid" id="modalIngredients"></div>
+
+        <button class="btn-full" id="modalAddBtn">Добавить в корзину</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Auth modal -->
+  <div class="modal-overlay" id="authModal">
+    <div class="auth-card">
+      <button class="auth-close" onclick="closeAuth()">✕</button>
+      <div id="authContent"></div>
+    </div>
+  </div>
+
+  <!-- Cart drawer -->
+  <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+  <div class="drawer" id="drawer">
+    <div class="drawer-header">
+      <h2>Корзина</h2>
+      <button class="close" onclick="closeDrawer()">✕</button>
+    </div>
+    <div class="drawer-items" id="drawerItems"></div>
+    <div class="drawer-footer">
+      <div class="total-row">
+        <span class="label">Итого:</span>
+        <span class="big" id="drawerTotal">0 ₽</span>
+      </div>
+      <div class="subtotal" id="drawerSubtotal"></div>
+      <button class="btn-checkout" onclick="goCheckout()">Оформить заказ →</button>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
